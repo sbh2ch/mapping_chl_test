@@ -23,7 +23,7 @@ public class PosController {
 
     @GetMapping("/api/{date}/{pos}/{type}")
     public ResponseEntity getValue(@PathVariable String date, @PathVariable String pos, @PathVariable String type) throws Exception {
-        Scanner scan = new Scanner(new File("C:/mat/output/22test.pos"));
+        Scanner scan = new Scanner(new File("C:/mat/output/" + pos + "test.pos"));
 
         String txt = "";
         int x = 0;
