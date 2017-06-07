@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+hello world!
+<div id="panel" style="width: 1000px; height: 1000px; background-image: url(./test.JPG);"></div>
+<h1 id="textOutput"></h1>
+<script src="https://code.jquery.com/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var arr = new Array(new Array(5), new Array(5), new Array(5), new Array(5), new Array(5));
+        var $textOutput = $("#textOutput");
+
+        if (arr[0][0] == null) {
+            $.ajax({
+                url: '/api/16070901/22/chl',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    arr[0][0] = data;
+                    console.dir(arr[0][0]);
+                }
+            });
+        }
+
+        $("#panel").mousemove(function (e) {
+            var offsetX = parseInt((e.pageX - $(this).offset().left) / 10);
+            var offsetY = parseInt((e.pageY - $(this).offset().top) / 10);
+            var strInfo = "offsetX =" + offsetX + ", offsetY = " + offsetY + "<br/>";
+            $textOutput.html(strInfo + " <br/> value :" + arr[0][0][offsetY][offsetX]);
+        })
+    });
+</script>
+
+</body>
+</html>
