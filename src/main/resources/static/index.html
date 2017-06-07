@@ -6,7 +6,11 @@
 </head>
 <body>
 <h1 id="textOutput">Hello World</h1>
+<button class="opacityBtn" data-val="0.1">+</button>
+<button class="opacityBtn" data-val="-0.1">-</button>
 <div style="width: 1000px; height: 1000px; display: block; position: absolute;">
+    <img src="assets/slot/160709/01/RGB.JPG" width="1000" height="1000"
+         style="height: 1000px; width: 1000px; position: absolute; left: 0px; top: 0px;">
     <img class="slots" id="00" src="assets/slot/160709/01/00.JPG" width="200" height="200"
          style="position: absolute; border: 0px; margin: 0px; padding: 0px; max-width: none; max-height: none; width: 200px; height: 200px; left:0px; top: 0px;">
     <img class="slots" id="10" src="assets/slot/160709/01/01.JPG" width="200" height="200"
@@ -61,9 +65,25 @@
 
 <script src="https://code.jquery.com/jquery.min.js"></script>
 <script>
+    var opacity = 1;
+
     $(document).ready(function () {
+
         var arr = new Array(new Array(5), new Array(5), new Array(5), new Array(5), new Array(5));
         var $textOutput = $("#textOutput");
+        $(".slots").css('opacity', opacity);
+
+        $(".opacityBtn").click(function () {
+            opacity = opacity + parseFloat($(this).data('val'));
+
+            if (opacity > 1) {
+                opacity = 1;
+            } else if (opacity < 0) {
+                opacity = 0;
+            }
+            $(".slots").css('opacity', opacity);
+        });
+
 
         $(".slots").click(function (e) {
             var id = $(this).attr('id');

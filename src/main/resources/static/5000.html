@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1 id="textOutput">Hello World</h1>
+<div style="width: 5000px; height: 5000px; display: block; position: absolute;margin: 10px;">
+    <img id="chl" src="assets/slot/160709/01/chl.JPG" width="5000" height="5000"
+         style="height: 5000px; width: 5000px; position: absolute; left: 0px; top: 0px;">
+</div>
+
+<script src="https://code.jquery.com/jquery.min.js"></script>
+<script>
+    var arr = new Array(50);
+    for (var i = 0; i < 50; i++) {
+        arr[i] = new Array(50);
+    }
+
+    $(document).ready(function () {
+        var $textOutput = $("#textOutput");
+
+        $("#chl").click(function (e) {
+            var offsetX = parseInt((e.pageX - $(this).offset().left));
+            var offsetY = parseInt((e.pageY - $(this).offset().top));
+            var arrX = parseInt(offsetX / 100);
+            var arrY = parseInt(offsetY / 100);
+            var posX = parseInt(offsetX % 100);
+            var posY = parseInt(offsetY % 100);
+
+            if (arr[arrX][arrY] == null) {
+                $.ajax({
+                    url: '/api/160709-1/' + arrX + '-' + arrY + '/chl',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        arr[arrX][arrY] = data;
+                    },
+                    error: function () {
+                        alert('data.load.error');
+                    }
+                })
+            } else {
+                $textOutput.html(offsetX + " : " + offsetY + "<br/>arr[" + arrX + "][" + arrY + "]<br/>posX : " + posX + ", posY : " + posY + '<br/>value : ' + arr[arrX][arrY][posY][posX]);
+            }
+
+        });
+    });
+</script>
+</body>
+</html>
