@@ -8,8 +8,9 @@
     <script src="../../docs/js/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="../../docs/js/examples-base.js"></script>
     <script type="text/javascript" src="../../docs/js/highlight.min.js"></script>
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=RyaikNMKgfrzfrriny1D&amp;submodules=panorama"></script>
-    <link rel="stylesheet" type="text/css" href="../../docs/css/examples-base.css" />
+    <script type="text/javascript"
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=RyaikNMKgfrzfrriny1D&amp;submodules=panorama"></script>
+    <link rel="stylesheet" type="text/css" href="../../docs/css/examples-base.css"/>
     <script>
         var HOME_PATH = '../../docs';
     </script>
@@ -21,74 +22,96 @@
 <div id="wrap" class="section">
     <h2>Naver Greenfactory map</h2>
     <p>사용자 지도 유형 만들기 예제입니다. 이 예제는 jQuery 구문을 포함하고 있습니다.</p>
-    <div id="map" style="width:100%;height:600px;"></div>
+    <div id="map" style="width:100%;height:1000px;"></div>
     <code id="snippet" class="snippet"></code>
 </div>
 <script id="code">
-var HOME_PATH = window.HOME_PATH || '.';
+    var HOME_PATH = window.HOME_PATH || '.';
 
-var tileSize = new naver.maps.Size(256, 256),
-    proj = {
-        fromCoordToPoint: function(coord) {
-            var pcoord = coord.clone();
+    var tileSize = new naver.maps.Size(200, 200),
+        proj = {
+            fromCoordToPoint: function (coord) {
+                var pcoord = coord.clone();
 
-            if (coord instanceof naver.maps.LatLng) {
-                pcoord = new naver.maps.Point(coord.lng(), coord.lat());
-            }
+                if (coord instanceof naver.maps.LatLng) {
+                    pcoord = new naver.maps.Point(coord.lng(), coord.lat());
+                }
 
-            return pcoord.div(tileSize.width, tileSize.height);
-        },
-
-        fromPointToCoord: function(point) {
-            return point.clone().mul(tileSize.width, tileSize.height);
-        }
-    },
-    getMapType = function(floor) {
-        var commonOptions = {
-                name: '',
-                minZoom: 0,
-                maxZoom: 4,
-                tileSize: tileSize,
-                projection: proj,
-                repeatX: false,
-                tileSet: '',
-                vendor: '\xa9 NAVER Corp.',
-                uid: ''
+                return pcoord.div(tileSize.width, tileSize.height);
             },
-            mapTypeOptions = $.extend({}, commonOptions, {
-                name: floor,
-                tileSet: HOME_PATH +'/tiles/gf-{floor}/{z}/{x}-{y}.png'.replace('{floor}', floor.toLowerCase()),
-                uid: 'naver:greenfactory:' + floor
-            });
 
-        return new naver.maps.ImageMapType(mapTypeOptions);
-    };
+            fromPointToCoord: function (point) {
+                return point.clone().mul(tileSize.width, tileSize.height);
+            }
+        },
+        getMapType = function (floor) {
+            var commonOptions = {
+                    name: '',
+                    minZoom: 0,
+                    maxZoom: 5,
+                    tileSize: tileSize,
+                    projection: proj,
+                    repeatX: false,
+                    tileSet: '',
+                    vendor: 'KOSC',
+                    uid: ''
+                },
+                mapTypeOptions = $.extend({}, commonOptions, {
+                    name: floor,
+                    tileSet: HOME_PATH + '/tiles/gf-{floor}/{z}/{y}-{x}.png'.replace('{floor}', floor.toLowerCase()),
+                    uid: 'naver:greenfactory:' + floor
+                });
 
-
-var map = new naver.maps.Map('map', {
-    center: new naver.maps.Point(128, 128),
-    zoom: 2,
-    background: '#FFFFFF',
-    mapTypes: new naver.maps.MapTypeRegistry({
-        '+1F': getMapType('1F'),
-        '+2F': getMapType('2F'),
-        '+4F': getMapType('4F'),
-        '+5F': getMapType('5F'),
-    }),
-    mapTypeId: '+1F',
-    mapTypeControl: true,
-    mapTypeControlOptions: {
-        mapTypeIds: ['+1F', '+2F', '+4F', '+5F'],
-        position: naver.maps.Position.BOTTOM_CENTER,
-        style: naver.maps.MapTypeControlStyle.BUTTON
-    },
-    zoomControl: true,
-    zoomControlOptions: {
-        position: naver.maps.Position.TOP_RIGHT
-    }
-});
+            return new naver.maps.ImageMapType(mapTypeOptions);
+        };
 
 
+    var map = new naver.maps.Map('map', {
+        center: new naver.maps.Point(128, 128),
+        zoom: 2,
+        background: '#000000',
+        mapTypes: new naver.maps.MapTypeRegistry({
+            '+1F': getMapType('1F'),
+            '+2F': getMapType('2F'),
+            '+4F': getMapType('4F'),
+            '+5F': getMapType('5F'),
+        }),
+        mapTypeId: '+1F',
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            mapTypeIds: ['+1F', '+2F', '+4F', '+5F'],
+            position: naver.maps.Position.BOTTOM_CENTER,
+            style: naver.maps.MapTypeControlStyle.BUTTON
+        },
+        zoomControl: true,
+        zoomControlOptions: {
+            position: naver.maps.Position.TOP_RIGHT
+        },
+        disableDoubleClickZoom: true,
+        disableDoubleTapZoom: true
+    });
+    var marker = new naver.maps.Marker({
+        position: new naver.maps.Point(128, 128),
+        map: map
+    });
+
+    naver.maps.Event.addListener(map, 'click', function (e) {
+        console.dir(e);
+        marker.setPosition(e.point);
+        console.log(e.domEvent.offsetX);
+        console.log(e.domEvent.offsetY);
+        console.log(e.domEvent.toElement.attributes[2].nodeValue);
+        console.log(e.domEvent.toElement.attributes[2].nodeType);
+        $("#map > div").css('cursor','auto');
+    });
+
+    naver.maps.Event.addListener(map, 'dragend', function () {
+        $("#map > div").css('cursor','auto');
+    });
+
+    $(document).ready(function () {
+        $("#map > div").css('cursor','auto');
+    });
 </script>
 
 </body>
