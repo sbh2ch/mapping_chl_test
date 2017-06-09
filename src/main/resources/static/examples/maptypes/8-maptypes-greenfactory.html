@@ -20,13 +20,26 @@
 <!-- @category MapType -->
 
 <div id="wrap" class="section">
-    <h2>Naver Greenfactory map</h2>
-    <p>사용자 지도 유형 만들기 예제입니다. 이 예제는 jQuery 구문을 포함하고 있습니다.</p>
+    <h2>GOCI CHL Map</h2>
     <div id="map" style="width:100%;height:1000px;"></div>
+    <p id="result">Example.</p>
     <code id="snippet" class="snippet"></code>
 </div>
 <script id="code">
     var HOME_PATH = window.HOME_PATH || '.';
+    var valueArr = [new Array(6), new Array(12), new Array(25), new Array(50)];
+    for (var i = 0; i < 6; i++) {
+        valueArr[0][i] = new Array(6);
+    }
+    for (var i = 0; i < 12; i++) {
+        valueArr[1][i] = new Array(12);
+    }
+    for (var i = 0; i < 25; i++) {
+        valueArr[2][i] = new Array(25);
+    }
+    for (var i = 0; i < 50; i++) {
+        valueArr[3][i] = new Array(50);
+    }
 
     var tileSize = new naver.maps.Size(200, 200),
         proj = {
@@ -48,7 +61,7 @@
             var commonOptions = {
                     name: '',
                     minZoom: 0,
-                    maxZoom: 5,
+                    maxZoom: 6,
                     tileSize: tileSize,
                     projection: proj,
                     repeatX: false,
@@ -58,7 +71,7 @@
                 },
                 mapTypeOptions = $.extend({}, commonOptions, {
                     name: floor,
-                    tileSet: HOME_PATH + '/tiles/gf-{floor}/{z}/{y}-{x}.png'.replace('{floor}', floor.toLowerCase()),
+                    tileSet: HOME_PATH + '/tiles/gf-{floor}/{z}/{x}-{y}.JPG'.replace('{floor}', floor.toLowerCase()),
                     uid: 'naver:greenfactory:' + floor
                 });
 
@@ -67,7 +80,7 @@
 
 
     var map = new naver.maps.Map('map', {
-        center: new naver.maps.Point(128, 128),
+        center: new naver.maps.Point(60, 60),
         zoom: 2,
         background: '#000000',
         mapTypes: new naver.maps.MapTypeRegistry({
@@ -83,34 +96,76 @@
             position: naver.maps.Position.BOTTOM_CENTER,
             style: naver.maps.MapTypeControlStyle.BUTTON
         },
-        zoomControl: true,
-        zoomControlOptions: {
-            position: naver.maps.Position.TOP_RIGHT
-        },
+//        zoomControl: true,
+//        zoomControlOptions: {
+//            position: naver.maps.Position.TOP_RIGHT
+//        },
         disableDoubleClickZoom: true,
         disableDoubleTapZoom: true
     });
     var marker = new naver.maps.Marker({
-        position: new naver.maps.Point(128, 128),
+        position: new naver.maps.Point(49.125, 53.5),
         map: map
     });
 
     naver.maps.Event.addListener(map, 'click', function (e) {
         console.dir(e);
         marker.setPosition(e.point);
-        console.log(e.domEvent.offsetX);
-        console.log(e.domEvent.offsetY);
-        console.log(e.domEvent.toElement.attributes[2].nodeValue);
-        console.log(e.domEvent.toElement.attributes[2].nodeType);
-        $("#map > div").css('cursor','auto');
+        var fName = e.domEvent.toElement.attributes[2].nodeValue;
+        if (fName.endsWith(".gif")) {
+            console.log('end with gif');
+            return;
+        }
+        fName = fName.split("/")[6].split(".")[0].split("-");
+        var zoom = e.domEvent.toElement.attributes[2].nodeValue.split("/")[5];
+        console.log(zoom);
+        var arrX = fName[0];
+        var arrY = fName[1];
+        switch (zoom) {
+            case "3":
+                if (arrX >= 6 || arrY >= 6)
+                    return;
+                break;
+            case "4":
+                if (arrX >= 12 || arrY >= 12)
+                    return;
+                break;
+            case "5":
+                if (arrX >= 25 || arrY >= 25)
+                    return;
+                break;
+            case "6":
+                if (arrX >= 50 || arrY >= 50)
+                    return;
+                break;
+        }
+        var posX = parseInt(e.domEvent.offsetX / 2);
+        var posY = parseInt(e.domEvent.offsetY / 2);
+        if (valueArr[zoom - 3][arrX][arrY] == null) {
+            $.ajax({
+                url: '/api/160709-1/' + arrX + '-' + arrY + '/' + zoom + '/chl',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    valueArr[zoom - 3][arrX][arrY] = data;
+                    $("#result").html(valueArr[zoom - 3][arrX][arrY][posX][posY]);
+                },
+                error: function () {
+                    alert('data.load.error!');
+                }
+            });
+        } else {
+            $("#result").html(valueArr[zoom - 3][arrX][arrY][posX][posY]);
+        }
+        $("#map > div").css('cursor', 'auto');
     });
 
     naver.maps.Event.addListener(map, 'dragend', function () {
-        $("#map > div").css('cursor','auto');
+        $("#map > div").css('cursor', 'auto');
     });
 
     $(document).ready(function () {
-        $("#map > div").css('cursor','auto');
+        $("#map > div").css('cursor', 'auto');
     });
 </script>
 
