@@ -129,13 +129,13 @@
     naver.maps.Event.addListener(map, 'click', function (e) {
         console.dir(e);
         marker.setPosition(e.point);
-        var fName = e.domEvent.toElement.attributes[2].nodeValue;
+        var fName = e.domEvent.target.attributes[2].nodeValue;
         if (fName.endsWith(".gif")) {
             console.log('end with gif');
             return;
         }
         fName = fName.split("/")[6].split(".")[0].split("-");
-        var zoom = e.domEvent.toElement.attributes[2].nodeValue.split("/")[5];
+        var zoom = e.domEvent.target.attributes[2].nodeValue.split("/")[5];
         console.log(zoom);
         var arrX = fName[0];
         var arrY = fName[1];
@@ -159,12 +159,16 @@
         }
         var posX = parseInt(e.domEvent.offsetX / 2);
         var posY = parseInt(e.domEvent.offsetY / 2);
+
+        console.log('x:' + e.domEvent.offsetX);
+        console.log('y:' + e.domEvent.offsetY);
         if (valueArr[zoom - 3][arrX][arrY] == null) {
             $.ajax({
                 url: '/api/160709-1/' + arrX + '-' + arrY + '/' + zoom + '/chl',
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
+                    console.dir(data);
                     valueArr[zoom - 3][arrX][arrY] = data;
                     $("#result").html(valueArr[zoom - 3][arrX][arrY][posX][posY]);
                 },
