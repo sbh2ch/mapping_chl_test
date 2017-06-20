@@ -9,11 +9,12 @@
     <script type="text/javascript" src="../../docs/js/examples-base.js"></script>
     <script type="text/javascript" src="../../docs/js/highlight.min.js"></script>
     <script type="text/javascript"
-            src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=RyaikNMKgfrzfrriny1D&amp;submodules=drawing"></script>
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=RyaikNMKgfrzfrriny1D&amp;submodules=panorama"></script>
     <link rel="stylesheet" type="text/css" href="../../docs/css/examples-base.css"/>
     <script>
         var HOME_PATH = '../../docs';
     </script>
+    <script src="../../../../../../../../Downloads/step05.js"></script>
 </head>
 <body>
 
@@ -114,37 +115,6 @@
         disableDoubleClickZoom: true,
         disableDoubleTapZoom: true
     });
-
-    var drawingManager = new naver.maps.drawing.DrawingManager({
-        map: map,
-        drawingControl: [naver.maps.drawing.DrawingMode.RECTANGLE],
-        drawingControlOptions: {
-            position: naver.maps.Position.TOP_LEFT,
-            style: naver.maps.drawing.DrawingStyle.HORIZONTAL
-        },
-        controlPointOptions: {
-            anchorPointOptions: {
-                radius: 5,
-                fillColor: '#ff0000',
-                strokeColor: '#ff0000',
-                strokeWeight: 1
-            },
-            midPointOptions: {
-                radius: 4,
-                fillColor: '#ff0000',
-                strokeColor: '#ffffff',
-                strokeWeight: 2,
-                fillOpacity: 0.3
-            }
-        },
-        rectangleOptions: {
-            fillColor: '#ff0000',
-            fillOpacity: 0.3,
-            strokeWeight: 3,
-            strokeColor: '#ff0000'
-        }
-    });
-
     var marker = new naver.maps.Marker({
         icon: {
             url: HOME_PATH + '/img/marker.png',
@@ -244,34 +214,7 @@
             console.log('img x : ' + offsetX);
             console.log('img y : ' + offsetY);
         });
-
-        var OVERAY_NAMES = ['rectangle'];
-        var EVENT_SUBFIXEX = ['Added', 'Selected', 'Removed'];
-        var GROUPED_EVENTS = [
-            naver.maps.drawing.DrawingEvents.ADD,
-            naver.maps.drawing.DrawingEvents.SELECT,
-            naver.maps.drawing.DrawingEvents.REMOVE
-        ];
-
-        $(OVERAY_NAMES).each(function (i, name) {
-            $(EVENT_SUBFIXEX).each(function (i, subfix) {
-                console.log('getDrawings', drawingManager.getDrawings());
-                var eventName = name + subfix;
-                drawingManager.addListener(eventName, function (overlay) {
-                    console.log(eventName + '<br>');
-                });
-            })
-        });
-        $(GROUPED_EVENTS).each(function (i, eventName) {
-            drawingManager.addListener(eventName, function (overlay) {
-                console.log('addListener', drawingManager.getDrawings());
-                console.log(eventName + '<br>---------------------<br>');
-            });
-        });
-
     });
-
-
 </script>
 
 </body>

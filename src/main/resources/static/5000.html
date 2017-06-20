@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="../../../../../../Downloads/step05.js"></script>
 </head>
 <body>
 <h1 id="textOutput">Hello World</h1>
@@ -29,7 +30,7 @@
             var posX = parseInt(offsetX % 100);
             var posY = parseInt(offsetY % 100);
 
-            if (arr[arrX][arrY] == null) {
+            if (arr[arrX][arrY] === null) {
                 $.ajax({
                     url: '/api/160709-1/' + arrX + '-' + arrY + '/chl',
                     method: 'GET',
