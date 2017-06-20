@@ -26,6 +26,7 @@
 </div>
 <script id="code">
     var HOME_PATH = window.HOME_PATH || '.';
+    // 매핑할 배열 생성
     var valueArr = [new Array(6), new Array(12), new Array(25), new Array(50)];
     var latArr = [new Array(6), new Array(12), new Array(25), new Array(50)];
     var lonArr = [new Array(6), new Array(12), new Array(25), new Array(50)];
@@ -159,7 +160,6 @@
 
 
     naver.maps.Event.addListener(map, 'click', function (e) {
-        console.log(e);
         marker.setPosition(e.point);
         var fName = e.domEvent.target.attributes[2].nodeValue;
         if (fName.endsWith(".gif")) {
@@ -190,10 +190,11 @@
         }
         var posX = parseInt(e.domEvent.offsetX / 2);
         var posY = parseInt(e.domEvent.offsetY / 2);
+        console.log(posX, posY);
 
         console.log('x:' + e.domEvent.offsetX);
         console.log('y:' + e.domEvent.offsetY);
-        if (valueArr[zoom - 3][arrX][arrY] == null) {
+        if (valueArr[zoom - 3][arrX][arrY] === undefined) {
             $.ajax({
                 url: '/api/160709-1/' + arrX + '-' + arrY + '/' + zoom + '/chl',
                 method: 'GET',
@@ -246,11 +247,9 @@
         });
 
         var OVERAY_NAMES = ['rectangle'];
-        var EVENT_SUBFIXEX = ['Added', 'Selected', 'Removed'];
+        var EVENT_SUBFIXEX = ['Added'];
         var GROUPED_EVENTS = [
-            naver.maps.drawing.DrawingEvents.ADD,
-            naver.maps.drawing.DrawingEvents.SELECT,
-            naver.maps.drawing.DrawingEvents.REMOVE
+            naver.maps.drawing.DrawingEvents.ADD
         ];
 
         $(OVERAY_NAMES).each(function (i, name) {
@@ -260,12 +259,22 @@
                 drawingManager.addListener(eventName, function (overlay) {
                     console.log(eventName + '<br>');
                 });
-            })
+            });
         });
+
         $(GROUPED_EVENTS).each(function (i, eventName) {
             drawingManager.addListener(eventName, function (overlay) {
-                console.log('addListener', drawingManager.getDrawings());
-                console.log(eventName + '<br>---------------------<br>');
+                var createRectangles = drawingManager.getDrawings();
+                var key = Object.keys(createRectangles);
+                if (confirm('save?')) {
+                    var selectedSector = createRectangles[key[key.length - 1]].bounds;
+                    console.log('min x', selectedSector._min.x * 32);
+                    console.log('min y', selectedSector._min.y * 32);
+                    console.log('max x', selectedSector._max.x * 32);
+                    console.log('max y', selectedSector._max.y * 32);
+                } else {
+                    createRectangles[key].setMap(null);
+                }
             });
         });
 
