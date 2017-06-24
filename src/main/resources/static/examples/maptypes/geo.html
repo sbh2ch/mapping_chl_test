@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Naver Greenfactory map</title>
+    <title>KOSC - GET</title>
     <script src="../../docs/js/jquery-1.9.1.js"></script>
     <script type="text/javascript" src="../../docs/js/examples-base.js"></script>
     <script type="text/javascript" src="../../docs/js/highlight.min.js"></script>
@@ -20,7 +20,7 @@
 <!-- @category MapType -->
 
 <div id="wrap" class="section">
-    <h2>GOCI CHL Map</h2>
+    <h2>Goci data Edit Tool - GET v0.1</h2>
     <div id="map" style="width:100%;height:1000px;"></div>
     <p id="result" style="font-size: 30px;">Example.</p>
 </div>
@@ -159,7 +159,12 @@
     });
 
 
+    naver.maps.Event.addListener(map, 'touchend', function (e) {
+        console.log('touched!', e);
+    });
+
     naver.maps.Event.addListener(map, 'click', function (e) {
+        var nStart = new Date().getTime();
         marker.setPosition(e.point);
         var fName = e.domEvent.target.attributes[2].nodeValue;
         if (fName.endsWith(".gif")) {
@@ -194,23 +199,44 @@
 
         console.log('x:' + e.domEvent.offsetX);
         console.log('y:' + e.domEvent.offsetY);
+        var resultTxt = '';
         if (valueArr[zoom - 3][arrX][arrY] === undefined) {
+            if (latArr[zoom - 3][arrX][arrY] === undefined) {
+                console.log('url is ', '/api/lonlat/' + arrX + '-' + arrY + '/' + zoom);
+                $.ajax({
+                    url: '/api/lonlat/' + arrX + '-' + arrY + '/' + zoom,
+                    method: 'GET',
+                    async: false,
+                    dataType: 'json',
+                    success: function (lonlat) {
+                        lonArr[zoom - 3][arrX][arrY] = lonlat[0];
+                        latArr[zoom - 3][arrX][arrY] = lonlat[1];
+                    }
+                });
+            }
+
             $.ajax({
                 url: '/api/160709-1/' + arrX + '-' + arrY + '/' + zoom + '/chl',
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
                     valueArr[zoom - 3][arrX][arrY] = data;
-                    $("#result").html(valueArr[zoom - 3][arrX][arrY][posX][posY]);
+                    $("#result").html('value : ' + valueArr[zoom - 3][arrX][arrY][posX][posY] + '<br/>lon : ' + lonArr[zoom - 3][arrX][arrY][posX][posY] + '<br/>lat : ' + latArr[zoom - 3][arrX][arrY][posX][posY]);
                 },
                 error: function () {
                     alert('data.load.error!');
                 }
             });
+
+
         } else {
-            $("#result").html(valueArr[zoom - 3][arrX][arrY][posX][posY]);
+            $("#result").html('value : ' + valueArr[zoom - 3][arrX][arrY][posX][posY] + '<br/>lon : ' + lonArr[zoom - 3][arrX][arrY][posX][posY] + '<br/>lat : ' + latArr[zoom - 3][arrX][arrY][posX][posY]);
         }
         $("#map > div").css('cursor', 'auto');
+
+        var nEnd = new Date().getTime();
+
+        console.log('runtime:', nEnd - nStart);
     });
 
     naver.maps.Event.addListener(map, 'dragend', function () {
@@ -268,20 +294,32 @@
                 var key = Object.keys(createRectangles);
                 if (confirm('save?')) {
                     var selectedSector = createRectangles[key[key.length - 1]].bounds;
-                    console.log('min x', selectedSector._min.x * 32);
-                    console.log('min y', selectedSector._min.y * 32);
-                    console.log('max x', selectedSector._max.x * 32);
-                    console.log('max y', selectedSector._max.y * 32);
+                    let data = {
+                        "startX": Math.round(selectedSector._min.x * 32) + "",
+                        "startY": Math.round(selectedSector._min.y * 32) + "",
+                        "endX": Math.round(selectedSector._max.x * 32) + "",
+                        "endY": Math.round(selectedSector._max.y * 32) + "",
+                        "date": "2016-07-09-01", //todo date 변수 처리
+                        "type": "CDOM" //todo type 변수 처릐
+                    };
+
+                    $.ajax({
+                        url: '/api/image',
+                        method: 'POST',
+                        dataType: 'json',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        data: JSON.stringify(data),
+                        success: (data) => console.log('ajax', data)
+                    })
+
                 } else {
                     createRectangles[key].setMap(null);
                 }
             });
         });
-
     });
-
-
 </script>
-
 </body>
 </html>
