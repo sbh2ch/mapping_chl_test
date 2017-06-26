@@ -1,5 +1,6 @@
 # mapping_chl_test
 ### todo
+* ~~apply Naver Maps API~~
 * pick a date
 * pick a type(tss, cdom, chl)
 * ~~divide the data~~
