@@ -5,7 +5,8 @@
 * pick a type(tss, cdom, chl)
 * ~~divide the data~~
 * ~~build the crop batch processing~~
-* IE comparison
+* IE comparison(~ing)
+* handle crop event(toggle)
 * ~~deploy testing server~~
 * handle mobile event 
 * backend processing automation
