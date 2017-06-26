@@ -95,7 +95,7 @@
 
     $(OVERAY_NAMES).each(function (i, name) {
         $(EVENT_SUBFIXEX).each(function (i, subfix) {
-            console.log('getDrawings',drawingManager.getDrawings());
+            console.log('getDrawings', drawingManager.getDrawings());
             var eventName = name + subfix;
             drawingManager.addListener(eventName, function (overlay) {
                 logger.html(logger.html() + eventName + '<br>');

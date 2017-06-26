@@ -9,7 +9,7 @@
     <script type="text/javascript" src="../../docs/js/examples-base.js"></script>
     <script type="text/javascript" src="../../docs/js/highlight.min.js"></script>
     <script type="text/javascript"
-            src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=RyaikNMKgfrzfrriny1D&amp;submodules=drawing"></script>
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=RyaikNMKgfrzfrriny1D"></script>
     <link rel="stylesheet" type="text/css" href="../../docs/css/examples-base.css"/>
     <script>
         var HOME_PATH = '../../docs';
@@ -128,36 +128,6 @@
         disableDoubleTapZoom: true
     });
 
-    var drawingManager = new naver.maps.drawing.DrawingManager({
-        map: map,
-        drawingControl: [naver.maps.drawing.DrawingMode.RECTANGLE],
-        drawingControlOptions: {
-            position: naver.maps.Position.TOP_LEFT,
-            style: naver.maps.drawing.DrawingStyle.HORIZONTAL
-        },
-        controlPointOptions: {
-            anchorPointOptions: {
-                radius: 5,
-                fillColor: '#ff0000',
-                strokeColor: '#ff0000',
-                strokeWeight: 1
-            },
-            midPointOptions: {
-                radius: 4,
-                fillColor: '#ff0000',
-                strokeColor: '#ffffff',
-                strokeWeight: 2,
-                fillOpacity: 0.3
-            }
-        },
-        rectangleOptions: {
-            fillColor: '#ff0000',
-            fillOpacity: 0.3,
-            strokeWeight: 3,
-            strokeColor: '#ff0000'
-        }
-    });
-
 
     var marker = new naver.maps.Marker({
         icon: {
@@ -176,63 +146,43 @@
         console.log('touched!', e);
     });
 
-    var $cropBtn = $("li[_dm='1']");
-    var cropToggle = false;
-
-    $cropBtn.click(function (e) {
-        cropToggle = !cropToggle;
-    });
-
     naver.maps.Event.addListener(map, 'click', function (e) {
-        if (cropToggle)
-            return;
-
-        console.dir(e);
-        console.log('테스팅')
         var nStart = new Date().getTime();
         marker.setPosition(e.point);
-        var fName = e.originalEvent.target.src;
+        var fName = e.pointerEvent.srcElement.src;
         console.log('fName : ', fName);
+        console.dir(e);
         if (fName.endsWith(".gif")) {
             return;
         }
         fName = fName.split("/");
         fName = fName[fName.length - 1].split(".")[0].split("-");
-        var zoom = e.originalEvent.target.src.split("/");
+        var zoom = e.pointerEvent.srcElement.src.split("/");
         zoom = zoom[zoom.length - 2];
 
         var arrX = fName[0];
         var arrY = fName[1];
-        var scope;
         switch (zoom) {
             case "3":
-                scope = 800;
                 if (arrX >= 6 || arrY >= 6)
                     return;
                 break;
             case "4":
-                scope = 400;
                 if (arrX >= 12 || arrY >= 12)
                     return;
                 break;
             case "5":
-                scope = 200;
                 if (arrX >= 25 || arrY >= 25)
                     return;
                 break;
             case "6":
-                scope = 100;
                 if (arrX >= 50 || arrY >= 50)
                     return;
                 break;
         }
-//        var posX = parseInt(e.domEvent.offsetX / 2);
-//        var posY = parseInt(e.domEvent.offsetY / 2);
-        var posX = parseInt(((e.coord.x * 32) % scope) / (scope / 100));
-        var posY = parseInt(((e.coord.y * 32) % scope) / (scope / 100));
-
-        console.log('coord:', parseInt(((e.coord.x * 32) % scope) / (scope / 100)), parseInt(((e.coord.y * 32) % scope) / (scope / 100)));
-        console.log('ori:', posX, posY);
+        var posX = parseInt(e.domEvent.offsetX / 2);
+        var posY = parseInt(e.domEvent.offsetY / 2);
+        console.log(posX, posY);
 
         console.log('x:' + e.domEvent.offsetX);
         console.log('y:' + e.domEvent.offsetY);
@@ -282,7 +232,6 @@
     });
 
     naver.maps.Event.addListener(map, 'zoom_changed', function () {
-        console.log("function");
         $("img").click(function (e) {
             var offsetX = parseInt((e.pageX - $(this).offset().left));
             var offsetY = parseInt((e.pageY - $(this).offset().top));
@@ -310,54 +259,6 @@
             console.log('img y : ' + offsetY);
         });
 
-        var OVERAY_NAMES = ['rectangle'];
-        var EVENT_SUBFIXEX = ['Added'];
-        var GROUPED_EVENTS = [
-            naver.maps.drawing.DrawingEvents.ADD
-        ];
-
-        $(OVERAY_NAMES).each(function (i, name) {
-            $(EVENT_SUBFIXEX).each(function (i, subfix) {
-                console.log('getDrawings', drawingManager.getDrawings());
-                var eventName = name + subfix;
-                drawingManager.addListener(eventName, function (overlay) {
-                    console.log(eventName + '<br>');
-                });
-            });
-        });
-
-        $(GROUPED_EVENTS).each(function (i, eventName) {
-            drawingManager.addListener(eventName, function (overlay) {
-                var createRectangles = drawingManager.getDrawings();
-                var key = Object.keys(createRectangles);
-                if (confirm('save?')) {
-                    var selectedSector = createRectangles[key[key.length - 1]].bounds;
-                    let data = {
-                        "startX": Math.round(selectedSector._min.x * 32) + "",
-                        "startY": Math.round(selectedSector._min.y * 32) + "",
-                        "endX": Math.round(selectedSector._max.x * 32) + "",
-                        "endY": Math.round(selectedSector._max.y * 32) + "",
-                        "date": "2016-07-09-01", //todo date 변수 처리
-                        "type": "CDOM" //todo type 변수 처릐
-                    };
-                    $.ajax({
-                        url: '/api/image',
-                        method: 'POST',
-                        dataType: 'json',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        data: JSON.stringify(data)
-                    });
-
-                } else {
-                    createRectangles[key].setMap(null);
-                }
-                setTimeout(function () {
-                    cropToggle = false;
-                }, 500);
-            });
-        });
     });
 </script>
 </body>
