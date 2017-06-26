@@ -83,6 +83,7 @@ public class PosController {
     public ResponseEntity makeCrop(@RequestBody He5 he5) throws Exception {
         String[] dates = he5.getDate().split("-");
         String name = new SimpleDateFormat("yyMMddHHmmssSSS").format(new Date());
+        String[] command = new String[3];
         String params = dates[0] + " " + dates[1] + " " + dates[2] + " " + dates[3] + " " + he5.getType() + " " + name + " " + he5.getStartX() + " " + he5.getEndX() + " " + he5.getStartY() + " " + he5.getEndY() + " C:\\";
 
         Runtime.getRuntime().exec("C:\\mat\\crop\\distrib\\testing.exe " + params).waitFor();
