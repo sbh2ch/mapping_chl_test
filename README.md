@@ -17,6 +17,8 @@
 * apply the Bootstrap
 * ~~converting he5 to NetCDF~~
 * Image Crop process
+* ~~generate KML file(footPrint+thumbNail)~~
 * ~~handle click event~~
 * ~~build REST server~~
 * purchase the Server
+* accept const's idiotful idea
