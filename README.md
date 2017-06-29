@@ -13,6 +13,7 @@
 * backend processing automation
 * ~~data mapping on Images~~
 * apply the React.js
+* deploy through the Jenkins
 * automate compressing system
 * apply the Bootstrap
 * ~~converting he5 to NetCDF~~
