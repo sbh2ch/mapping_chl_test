@@ -93,7 +93,8 @@
                 },
                 mapTypeOptions = $.extend({}, commonOptions, {
                     name: floor,
-                    tileSet: HOME_PATH + '/tiles/gf-{floor}/{z}/{x}-{y}.JPG'.replace('{floor}', floor.toLowerCase()),
+//                    tileSet: HOME_PATH + '/tiles/gf-{floor}/{z}/{x}-{y}.JPG'.replace('{floor}', floor.toLowerCase()),
+                    tileSet: 'http://222.236.46.44/test/2017/07/09/gf-{floor}/{z}/{x}-{y}.JPG'.replace('{floor}', floor.toLowerCase()),
                     uid: ''
                 });
 
@@ -200,7 +201,6 @@
         fName = fName[fName.length - 1].split(".")[0].split("-");
         var zoom = e.originalEvent.target.src.split("/");
         zoom = zoom[zoom.length - 2];
-
         var arrX = fName[0];
         var arrY = fName[1];
         var scope;
@@ -275,7 +275,6 @@
 
         console.log('runtime:', nEnd - nStart);
     });
-
 
     naver.maps.Event.addListener(map, 'dragend', function () {
         $("#map > div").css('cursor', 'auto');

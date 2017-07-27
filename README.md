@@ -24,3 +24,4 @@
 * purchase the Server
 * accept const's idiotful idea
 * handle loading event
+* build Image Server
