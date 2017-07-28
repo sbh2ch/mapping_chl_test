@@ -1,8 +1,8 @@
 # mapping_chl_test
 ### todo
 * ~~apply Naver Maps API~~
-* pick a date
-* pick a type(tss, cdom, chl)
+* ~~pick a date~~
+* ~~pick a type(tss, cdom, chl)~~
 * ~~divide the data~~
 * ~~build the crop batch processing~~
 * IE comparison(~ing)
@@ -13,7 +13,7 @@
 * backend processing automation
 * ~~data mapping on Images~~
 * apply the React.js
-* deploy through the Jenkins
+* ~~deploy through the Jenkins~~
 * automate compressing system
 * apply the Bootstrap
 * ~~converting he5 to NetCDF~~
@@ -22,6 +22,8 @@
 * ~~handle click event~~
 * ~~build REST server~~
 * purchase the Server
-* accept const's idiotful idea
-* handle loading event
 * build Image Server
+* ~~accept const's idiotful idea~~
+* handle loading event
+* additional RESTful API
+* apply Long, Lat position

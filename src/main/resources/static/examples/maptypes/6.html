@@ -66,9 +66,15 @@
         gtaRoad = new naver.maps.ImageMapType(new GTA5MapTypeOption({name: "Road", type: "Tiles_ROAD"})),
         gtaUV = new naver.maps.ImageMapType(new GTA5MapTypeOption({name: "UV Invert", type: "Tiles_UV"}));
 
+    var min = {x: 126.5322317, y: 33.3572421},
+        max = {x: 126.5364907, y: 33.3608829};
+
+    var bounds = {north: max.y, east: max.x, south: min.y, west: min.x};
+
     var map = new naver.maps.Map('map', {
-        bounds:new naver.maps.LatLngBounds(new naver.maps.LatLng(21.54363, 116.41853), new naver.maps.LatLng(46.99015, 148.67556)),
-        //center: new naver.maps.LatLng(47.90161299396793, -55.107421875),
+        bounds: bounds,
+//        bounds:new naver.maps.LatLngBounds(new naver.maps.LatLng(21.54363, 116.41853), new naver.maps.LatLng(46.99015, 148.67556)),
+//        center: new naver.maps.LatLng(47.90161299396793, -55.107421875),
         zoom: 2,
         mapTypes: new naver.maps.MapTypeRegistry({
             'atlas': gtaNormal,
